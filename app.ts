@@ -17,6 +17,11 @@ export const calculateEarning = (
     let totalRideAmount = 0;
     // All groups that has been passed.
     const pastGroups = [];
+    // if the available seats are less than current groups stop the roll coaster
+    // by returning the revenue
+    if (groups[0] > seatsCount) {
+      return earning;
+    }
     while (totalRideAmount + groups[0] <= seatsCount) {
       // Current group that want to take the roll coaster
       const currentGroup: number = groups.shift() as number;

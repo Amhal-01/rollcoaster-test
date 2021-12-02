@@ -18,4 +18,8 @@ describe("Earning calculation", () => {
     const output = calculateEarning(10, 100, [1]);
     expect(output).toEqual(100);
   });
+  test("it should equal to 10", () => {
+    const output = calculateEarning(10, 100, [10, 11, 10]);
+    expect(output).toEqual(10);
+  });
 });
