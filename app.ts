@@ -1,3 +1,43 @@
+import { readFileSync } from "fs";
+
+/**
+ * Get today's roll coaster earning from a file.
+ * @param fileName File name path
+ */
+export const app = (fileName: string) => {
+  console.info("Roll coaster: Input file:", fileName);
+
+  // Get all file's data
+  const data: string[] = readFileSync(fileName, "utf-8").split("\n");
+  // Get today's info
+  const info: string = data.shift() as string;
+  const [seatsCount, ridesCount, groupsCount] = info
+    .split(" ")
+    .map((row) => parseInt(row));
+  console.info(
+    `Roll coaster: FLASH INFO! There is available ${seatsCount} seats`,
+    `for ${ridesCount} rides and we will expect to have ${groupsCount} groups today.`
+  );
+  // Check if the data is valid
+  if (isNaN(seatsCount) || isNaN(ridesCount) || isNaN(groupsCount)) {
+    console.error("Roll coaster: Error: Invalid entry");
+    process.exit(1);
+  }
+  // Get groups and check if the group's length is matching with our expectation (groupsCount)
+  let groups = data.map((row) => parseInt(row)).filter((row) => !isNaN(row));
+  if (groupsCount !== groups.length) {
+    console.error(
+      "Roll coaster: Error: The group count must equal to the groups."
+    );
+    process.exit(1);
+  }
+  // Read today's earning
+  console.info(
+    "Roll coaster: Total earning:",
+    calculateEarning(seatsCount, ridesCount, groups)
+  );
+};
+
 /**
  * Daily roll coaster earning
  * @param seatsCount Available seat in the roll coaster
@@ -37,3 +77,10 @@ export const calculateEarning = (
   }
   return earning;
 };
+
+// Get command line argument count
+const argvCount = process.argv.length;
+// We expect to have in the second argument the file name.
+argvCount > 2
+  ? app(process.argv[2])
+  : console.error("Roll coaster:", "Invalid arguments.");
